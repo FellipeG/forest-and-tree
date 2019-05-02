@@ -5,12 +5,15 @@
 
 using namespace std;
 
+
+// Cria o struct da arvore que será inserida em uma floresta
 struct EnoArvore {
 	int chave;
  	struct EnoArvore *esq;
 	struct EnoArvore *dir;
 };
 
+// Cria o struct da floresta
 struct EnoFloresta {
 	int chaveInicial;
  	int chaveFinal;
@@ -19,33 +22,45 @@ struct EnoFloresta {
  	struct EnoArvore *arvore;
 };
 
+// Define o monitor
 struct EnoFloresta *monitor;
 
+// Define o monitor como valor inicial null
 void create() {
 	monitor = NULL;
 }
 
+// Aloca a floresta na memória passando a chave por paramêtro
 struct EnoFloresta *alocarFloresta(int chave) {
 	struct EnoFloresta *f;
 	f = (struct EnoFloresta *)malloc(sizeof(struct EnoFloresta));
+
+	/* Em chave inicial e final é definido o limite dos números aceitos pela floresta
+	   Caso seja 10 a chave passada por parâmetro, a floresta aceitará valores de 1 a 9 */
 	f->chaveInicial = chave-9;
 	f->chaveFinal = chave;
 	f->esq = NULL;
 	f->dir = NULL;
 	f->arvore = NULL;
+	
+	return f;
 }
 
+// Aloca o árvore na memória passando a chave como parâmetro
 struct EnoArvore *alocarArvore(int chave) {
 	struct EnoArvore *a;
 	a = (struct EnoArvore *)malloc(sizeof(struct EnoArvore));
 	a->chave = chave;
 	a->esq = NULL;
 	a->dir = NULL;
+	
+	return a;
 }
 
-
+// Insere uma nova floresta
 void inserirFloresta(int chave, struct EnoFloresta **elem) {
 	
+	// Caso base
 	if (*elem == NULL) {
 		
 		struct EnoFloresta *f = alocarFloresta(chave);
@@ -54,71 +69,119 @@ void inserirFloresta(int chave, struct EnoFloresta **elem) {
 		
 	}
 	
+	/* Se a chave da nova floresta for menor do que a chave da floresta passada por parâmetro, 
+	chama a árvore a esquerda, senão, chama a árvore a direita */
 	(chave < (*elem)->chaveInicial) ? inserirFloresta(chave, &(*elem)->esq) : inserirFloresta(chave, &(*elem)->dir);
 	
 }
 
-struct EnoFloresta *retornaFloresta(int chave, struct EnoFloresta *elem) {
+// Cria uma árvore binária
+void inserirNaArvore(int chave, struct EnoArvore **raiz) {
 	
-	if(elem == NULL) return NULL;
-	
-	if (elem->chaveInicial < chave && elem->chaveFinal > chave) return elem;
-	
-	if (elem->esq != NULL) {
-		
-		if(elem->chaveInicial > chave) {
-			
-			retornaFloresta(chave, elem->esq);
-		}
-	
-	}
-	
-	if (elem->dir != NULL) {
-		
-		if(elem->chaveFinal < chave) {
-			
-			retornaFloresta(chave, elem->dir);
-		}
-	
-	}
-	
-}
-
-/*void inserirNaArvore(int chave, struct EnoArvore *arvore) {
-
-	while (arvore->chave) {
-	}
-
-}
-
-void inserirArvore (int chave) {
-	
-	struct EnoFloresta *floresta = retornaFloresta(chave);
-	
-	if(floresta->arvore == NULL) {
-		struct EnoArvore *a = alocarArvore(chave);
+	// Caso base
+	if (*raiz == NULL) {
+		*raiz = alocarArvore(chave);
+		cout << (*raiz)->chave << endl;
 		return;
 	}
 	
-	if (chave < floresta->arvore->chave) {
-		inserir
+	/* Se a chave da nova árvore for menor do que a da raiz, chama a árvore a esquerda
+	senão, chama a árvore a direita até encontrar null */
+	(chave < (*raiz)->chave) ? inserirNaArvore(chave, &(*raiz)->esq) : inserirNaArvore(chave, &(*raiz)->dir);
+}
+
+// Verifica em qual das florestas a chave deve ser inserida
+void inserirArvore(int chave, struct EnoFloresta **floresta) {
+
+	 // Verifica se a chave está entre os valores permitidos da floresta
+	if ((chave >= (*floresta)->chaveInicial && chave < (*floresta)->chaveFinal) || (chave >= (*floresta)->chaveFinal && (*floresta)->dir == NULL)
+		|| (chave < (*floresta)->chaveInicial && (*floresta)->esq == NULL)) {
+		inserirNaArvore(chave, &(*floresta)->arvore);
+		return;
+	}
+	
+	// Caso seja menor que o valor minimo, chama a floresta a esquerda
+	if (chave < (*floresta)->chaveInicial) {
+		inserirArvore(chave, &(*floresta)->esq);
+	}
+	
+	// Caso seja maior, chama a floresta a direita
+	if (chave > (*floresta)->chaveFinal) {
+		inserirArvore(chave, &(*floresta)->dir);
+	}
+
+}
+
+// Imprime a árvore de todas passada por parâmetro - (método colchete)
+void imprimirPreOrdemArvore(struct EnoArvore *raiz) {
+	
+	// Caso base
+	if (raiz == NULL) return;
+	
+	// Imprime a chave
+	cout << "[" << raiz->chave;
+
+	// Caso o elemento a esquerda não seja nulo, é impreso
+	(raiz->esq != NULL) ? cout << "[" << raiz->esq->chave << "]" : cout << "[]";
+
+	// Caso o elemento a direita não seja nulo, é impresso
+	(raiz->dir != NULL) ? cout << "[" << raiz->dir->chave << "]" : cout << "[]";
+	cout << "]";
+	
+	// Chama o elemento a esquerda
+	imprimirPreOrdemArvore(raiz->esq);
+
+	// Chama o elemento a direita
+	imprimirPreOrdemArvore(raiz->dir);
+	
+	
+}
+
+
+// Imprime a floresta e suas respectivas árvores - (método colchete)
+void imprimirPreOrdem(struct EnoFloresta **floresta) {
+
+	// Caso base
+	if((*floresta) == NULL) return;
+
+	// Imprime a chave final da floresta (que é o valor digitado pelo usuário ou do teste)
+	cout << "[" << (*floresta)->chaveFinal;
+	
+	// Se a floresta a esquerda não for nula é impressa
+	if ((*floresta)->esq != NULL) {
+		cout << " [";
+		cout << (*floresta)->esq->chaveFinal;
+		// Imprime a árvore da floresta a esquerda
+		imprimirPreOrdemArvore((*floresta)->esq->arvore);
+		cout << "] ";
+	} else {
+		// Imprime colchete vazio caso a floresta a esquerda seja nula
+		cout << " [] ";
+	}
+	
+	// Se a floresta a direita não for nula é impressa
+	if ((*floresta)->dir != NULL) {
+		cout << "[";
+		cout << (*floresta)->dir->chaveFinal;
+		// Imprime a árvore da floresta a direita
+		imprimirPreOrdemArvore((*floresta)->dir->arvore);
+		cout << "]";
+	} else {
+		// Imprime colchete vazio caso a floresta a direita seja nula
+		cout << "[]";
 	}
 	
 	
-}*/
-
-void imprimirPreOrdem(struct EnoFloresta **floresta) {
-	if((*floresta) == NULL || ((*floresta)->chaveInicial == 0 && (*floresta)->chaveFinal == 0)) return;
-
-	cout << "[" << (*floresta)->chaveFinal;
-	((*floresta)->esq != NULL) ? cout << "[" << (*floresta)->esq->chaveFinal << "]" : cout << "[]";
-	((*floresta)->dir != NULL) ? cout << "[" << (*floresta)->dir->chaveFinal << "]" : cout << "[]";
 	cout << "]" << endl;
   	
+	// Chama a floresta a esquerda
   	imprimirPreOrdem(&(*floresta)->esq);  
+	
+	// Chama a floresta a direita
   	imprimirPreOrdem(&(*floresta)->dir);  
 }
 
+// Opções de impressão (Não terminado)
 void imprimir(int opcao) {  
   switch(opcao) {
   	case 1: 
@@ -127,13 +190,14 @@ void imprimir(int opcao) {
   		break;
 	case 2:
 		cout << "Percurso PreOrdem arvore" << endl;
-		//imprimirPreOrdemArvore(raiz);
 		break;
   	default:
   		cout << "Opcao Nao Invalida!!!" << endl;
   }/*switch*/
 }
 
+
+// Menu
 int menu() {
 	int opcao;
 	system("cls");
@@ -151,7 +215,6 @@ int menu() {
 		{ int elem;
 		  cout << "Digite o elemento para inserir na Floresta: ";
 		  cin >> elem;
-		  //inserir(elem,&raiz);
 		  return 1;
 		}
 		
@@ -159,7 +222,6 @@ int menu() {
 		{ int elem;
 		  cout << "Digite o elemento para inserir na arvore da floresta: ";
 		  cin >> elem;
-		  //IncluirArvFloresta(elem,&raiz);
 		  return 1;
 		}
 		
@@ -179,51 +241,38 @@ int menu() {
 		  int ordem;
 		  cout << "Digite:" << endl;	  
 	      cout << "1. Para Imprimir PreOrdem a arvore da floresta" << endl;
-	      cin >> ordem;
-		  //imprimir(ordem);	  
+	      cin >> ordem;	  
 		  system("pause");
 		  return 1;
 		}
 
 		case 5:
 		{ 
-			int x[10]={5, 15, 25, 35, 45, 55, 65, 75, 85, 95};
-			int z[9]={50, 80, 70, 40, 10, 30, 60, 20, 90};
+			int arvore[9]={5, 15, 25, 35, 45, 55, 65, 75, 85};
+			int floresta[9]={50, 80, 70, 40, 10, 30, 60, 20, 90};
 			
-			int sizez = sizeof(z) / sizeof(z[0]); // Obtem o tamanho do vetor Z
-			for(int i=0; i<sizez; i++) {
-				inserirFloresta(z[i], &monitor);
-				
+			int sizeFloresta = sizeof(floresta) / sizeof(floresta[0]); // Obtem o tamanho do vetor Z
+			for(int i=0; i<sizeFloresta; i++) {
+				inserirFloresta(floresta[i], &monitor);
 			}
-			
-			int sizex = sizeof(x) / sizeof(x[0]); // Obtem o tmanho do vetor X
-			for(int i=0; i<sizex; i++) {
-				//inserir(x[i]);
-			}
-			
-		  	//imprimir(1);	  
+			int sizeArvore = sizeof(arvore) / sizeof(arvore[0]); // Obtem o tamanho do vetor X
+			for(int i=0; i<sizeArvore; i++) {
+				inserirArvore(arvore[i], &monitor);
+			} 
 		  	system("pause");
 		  	return 1;
-        }       
+    }       
 		
-		default:
-			cout << "Digite uma opcao VALIDA!";
-			return 1;
+			default:
+				cout << "Digite uma opcao VALIDA!";
+				return 1;
 	}	
 }
 
 main() {
+
+	// Seta a linguagem padrão para português, para aceitar acentos e ç
+	setlocale(LC_ALL, "Portuguese");
 	create();
 	while(menu());
-}
-
-void imprimirPreOrdemArvore(struct EnoArvore *arvore)
-{
-	if(!arvore) return;
-	
-	cout << "[";
-  	cout << arvore->chave;
-  	//imprimirPreOrdem(arvore->esq);  
-  	//imprimirPreOrdem(arvore->dir);  
-	cout << "]";
 }
