@@ -5,8 +5,9 @@
 
 using namespace std;
 
+int contador = 1;
 
-// Cria o struct da arvore que ser√° inserida em uma floresta
+// Cria o struct da arvore que ser· inserida em uma floresta
 struct EnoArvore {
 	int chave;
  	struct EnoArvore *esq;
@@ -30,13 +31,13 @@ void create() {
 	monitor = NULL;
 }
 
-// Aloca a floresta na mem√≥ria passando a chave por param√™tro
+// Aloca a floresta na memÛria passando a chave por par‚metro
 struct EnoFloresta *alocarFloresta(int chave) {
 	struct EnoFloresta *f;
 	f = (struct EnoFloresta *)malloc(sizeof(struct EnoFloresta));
 
-	/* Em chave inicial e final √© definido o limite dos n√∫meros aceitos pela floresta
-	   Caso seja 10 a chave passada por par√¢metro, a floresta aceitar√° valores de 1 a 9 */
+	/* Em chave inicial e final È definido o limite dos n˙meros aceitos pela floresta
+	   Caso seja 10 a chave passada por par‚metro, a floresta aceitar· valores de 1 a 9 */
 	f->chaveInicial = chave-9;
 	f->chaveFinal = chave;
 	f->esq = NULL;
@@ -46,7 +47,7 @@ struct EnoFloresta *alocarFloresta(int chave) {
 	return f;
 }
 
-// Aloca o √°rvore na mem√≥ria passando a chave como par√¢metro
+// Aloca o ·rvore na memÛria passando a chave como par‚metro
 struct EnoArvore *alocarArvore(int chave) {
 	struct EnoArvore *a;
 	a = (struct EnoArvore *)malloc(sizeof(struct EnoArvore));
@@ -60,6 +61,7 @@ struct EnoArvore *alocarArvore(int chave) {
 // Insere uma nova floresta
 void inserirFloresta(int chave, struct EnoFloresta **elem) {
 	
+	
 	// Caso base
 	if (*elem == NULL) {
 		
@@ -69,13 +71,13 @@ void inserirFloresta(int chave, struct EnoFloresta **elem) {
 		
 	}
 	
-	/* Se a chave da nova floresta for menor do que a chave da floresta passada por par√¢metro, 
-	chama a √°rvore a esquerda, sen√£o, chama a √°rvore a direita */
+	/* Se a chave da nova floresta for menor do que a chave da floresta passada por par‚metro, 
+	chama a ·rvore a esquerda, sen„o, chama a ·rvore a direita */
 	(chave < (*elem)->chaveInicial) ? inserirFloresta(chave, &(*elem)->esq) : inserirFloresta(chave, &(*elem)->dir);
 	
 }
 
-// Cria uma √°rvore bin√°ria
+// Cria uma ·rvore bin·ria
 void inserirNaArvore(int chave, struct EnoArvore **raiz) {
 	
 	// Caso base
@@ -85,15 +87,15 @@ void inserirNaArvore(int chave, struct EnoArvore **raiz) {
 		return;
 	}
 	
-	/* Se a chave da nova √°rvore for menor do que a da raiz, chama a √°rvore a esquerda
-	sen√£o, chama a √°rvore a direita at√© encontrar null */
+	/* Se a chave da nova ·rvore for menor do que a da raiz, chama a ·rvore a esquerda
+	sen„o, chama a ·rvore a direita atÈ encontrar null */
 	(chave < (*raiz)->chave) ? inserirNaArvore(chave, &(*raiz)->esq) : inserirNaArvore(chave, &(*raiz)->dir);
 }
 
 // Verifica em qual das florestas a chave deve ser inserida
 void inserirArvore(int chave, struct EnoFloresta **floresta) {
 
-	 // Verifica se a chave est√° entre os valores permitidos da floresta
+	 // Verifica se a chave est„o entre os valores permitidos da floresta
 	if ((chave >= (*floresta)->chaveInicial && chave < (*floresta)->chaveFinal) || (chave >= (*floresta)->chaveFinal && (*floresta)->dir == NULL)
 		|| (chave < (*floresta)->chaveInicial && (*floresta)->esq == NULL)) {
 		inserirNaArvore(chave, &(*floresta)->arvore);
@@ -112,7 +114,7 @@ void inserirArvore(int chave, struct EnoFloresta **floresta) {
 
 }
 
-// Imprime a √°rvore de todas passada por par√¢metro - (m√©todo colchete)
+// Imprime a ·rvore de todas passada por par‚metro - (mÈtodo colchete)
 void imprimirPreOrdemArvore(struct EnoArvore *raiz) {
 	
 	// Caso base
@@ -121,10 +123,10 @@ void imprimirPreOrdemArvore(struct EnoArvore *raiz) {
 	// Imprime a chave
 	cout << "[" << raiz->chave;
 
-	// Caso o elemento a esquerda n√£o seja nulo, √© impreso
+	// Caso o elemento a esquerda n„o seja nulo, È impresso
 	(raiz->esq != NULL) ? cout << "[" << raiz->esq->chave << "]" : cout << "[]";
 
-	// Caso o elemento a direita n√£o seja nulo, √© impresso
+	// Caso o elemento a direita n„o seja nulo, È impresso
 	(raiz->dir != NULL) ? cout << "[" << raiz->dir->chave << "]" : cout << "[]";
 	cout << "]";
 	
@@ -138,20 +140,20 @@ void imprimirPreOrdemArvore(struct EnoArvore *raiz) {
 }
 
 
-// Imprime a floresta e suas respectivas √°rvores - (m√©todo colchete)
+// Imprime a floresta e suas respectivas ·rvores - (mÈtodo colchete)
 void imprimirPreOrdem(struct EnoFloresta **floresta) {
 
 	// Caso base
 	if((*floresta) == NULL) return;
 
-	// Imprime a chave final da floresta (que √© o valor digitado pelo usu√°rio ou do teste)
+	// Imprime a chave final da floresta (que È o valor digitado pelo usu·rio ou do teste)
 	cout << "[" << (*floresta)->chaveFinal;
 	
-	// Se a floresta a esquerda n√£o for nula √© impressa
+	// Se a floresta a esquerda n„o for nula √© impressa
 	if ((*floresta)->esq != NULL) {
 		cout << " [";
 		cout << (*floresta)->esq->chaveFinal;
-		// Imprime a √°rvore da floresta a esquerda
+		// Imprime a ·rvore da floresta a esquerda
 		imprimirPreOrdemArvore((*floresta)->esq->arvore);
 		cout << "] ";
 	} else {
@@ -159,11 +161,11 @@ void imprimirPreOrdem(struct EnoFloresta **floresta) {
 		cout << " [] ";
 	}
 	
-	// Se a floresta a direita n√£o for nula √© impressa
+	// Se a floresta a direita n„o for nula È impressa
 	if ((*floresta)->dir != NULL) {
 		cout << "[";
 		cout << (*floresta)->dir->chaveFinal;
-		// Imprime a √°rvore da floresta a direita
+		// Imprime a ·rvore da floresta a direita
 		imprimirPreOrdemArvore((*floresta)->dir->arvore);
 		cout << "]";
 	} else {
@@ -181,73 +183,94 @@ void imprimirPreOrdem(struct EnoFloresta **floresta) {
   	imprimirPreOrdem(&(*floresta)->dir);  
 }
 
-// Op√ß√µes de impress√£o (N√£o terminado)
-void imprimir(int opcao) {  
-  switch(opcao) {
-  	case 1: 
-		cout << "Percurso PreOrdem floresta" << endl;
-  		imprimirPreOrdem(&monitor);
-  		break;
-	case 2:
-		cout << "Percurso PreOrdem arvore" << endl;
-		break;
-  	default:
-  		cout << "Opcao Nao Invalida!!!" << endl;
-  }/*switch*/
+// Imprime as opÁıes de ·rvore disponÌveis
+void imprimirOpcoesArvore(struct EnoFloresta *floresta, int *contador) {
+	
+	if (floresta == NULL) return;
+	
+	imprimirOpcoesArvore(floresta->esq, contador);
+	cout << "[" << (*contador)++ << "] De " << floresta->chaveInicial << " atÈ " << floresta->chaveFinal - 1 << endl;
+	imprimirOpcoesArvore(floresta->dir, contador);
+
 }
 
+// Recebe a opÁ„o do menu, o contador do topo da p·gina e a floresta monitor. Verifica se a opÁ„o bate com o contador e imprime a ·rvore da floresta correta
+void ImprimirArvoreEspecifica(int opcao, int *contador, struct EnoFloresta *floresta) {
+	
+	if (floresta == NULL) return;
+	
+		ImprimirArvoreEspecifica(opcao, contador, floresta->esq);
+		if (opcao == (*contador)++) {
+			imprimirPreOrdemArvore(floresta->arvore);
+		}
+		ImprimirArvoreEspecifica(opcao, contador, floresta->dir);
+}
 
 // Menu
 int menu() {
 	int opcao;
 	system("cls");
-	cout << "Digite:" << endl;
-	cout << "0. Para Sair" << endl;
-	cout << "1.Para Inserir na floresta" << endl;
-	cout << "2.Para Inserir na arvore" << endl;
-	cout << "3.Para Imprimir a floresta" << endl;
-	cout << "4.Para Imprimir a arvore" << endl;
-	cout << "5.Teste" << endl;
+	cout << endl << "-------- MENU --------" << endl << endl;
+	cout << "[1] Inserir na floresta" << endl;
+	cout << "[2] Inserir na arvore" << endl;
+	cout << "[3] Imprimir dados" << endl;
+	cout << "[4] Massa de teste" << endl;
+	cout << "[0] Sair" << endl;
+	cout << "OpÁ„o: ";
 	cin >> opcao;
 	switch(opcao) {
-		case 0: return 0;
+		case 0: 
+			return 0;
 		case 1:
-		{ int elem;
-		  cout << "Digite o elemento para inserir na Floresta: ";
-		  cin >> elem;
-		  return 1;
+		{ 
+			system("cls");
+			cout << endl << "-------- INSERIR NA FLORESTA --------" << endl << endl;
+			int elem;
+		  	cout << "Digite o elemento para inserir na Floresta: ";
+		  	cin >> elem;
+		  	return 1;
 		}
 		
 		case 2:
-		{ int elem;
-		  cout << "Digite o elemento para inserir na arvore da floresta: ";
-		  cin >> elem;
-		  return 1;
+		{ 
+			system("cls");
+			cout << endl << "-------- INSERIR NA ¡RVORE --------" << endl << endl;
+			int elem;
+		  	cout << "Digite o elemento para inserir na arvore da floresta: ";
+		  	cin >> elem;
+		  	return 1;
 		}
 		
 		case 3:
 		{ 
-		  int ordem;
-		  cout << "Digite:" << endl;		  
-	      cout << "1. Para Imprimir PreOrdem a Floresta" << endl;
-	      cin >> ordem;
-		  imprimir(ordem);	  
-		  system("pause");
-		  return 1;
-		}
-		
-		case 4:
-		{ 
-		  int ordem;
-		  cout << "Digite:" << endl;	  
-	      cout << "1. Para Imprimir PreOrdem a arvore da floresta" << endl;
-	      cin >> ordem;	  
-		  system("pause");
-		  return 1;
+			system("cls");
+			cout << endl << "-------- IMPRIMIR DADOS --------" << endl << endl;
+			int opcao, opcao2;
+			cout << "[1] Para Imprimir prÈ ordem dos dados da Floresta" << endl;		  
+	      	cout << "[2] Imprimir prÈ ordem dos dados especÌficos de uma floresta" << endl;
+	      	cout << "OpÁ„o:";
+	      	cin >> opcao;
+		  	if (opcao == 1) {
+		  		imprimirPreOrdem(&monitor);
+			} else if (opcao == 2) {
+				imprimirOpcoesArvore(monitor, &contador);
+				contador = 1;
+				cout << "OpÁ„o: ";
+				cin >> opcao2;
+				ImprimirArvoreEspecifica(opcao2, &contador, monitor);
+				//imprimirPreOrdemArvore(monitor);	
+			} else{
+				cout << "OpÁ„o inv·lida!" << endl;
+			}
+			cout << endl;
+		  	system("pause");
+		  	return 1;
 		}
 
-		case 5:
+		case 4:
 		{ 
+			system("cls");
+			cout << endl << "-------- MASSA DE TESTE --------" << endl << endl;
 			int arvore[9]={5, 15, 25, 35, 45, 55, 65, 75, 85};
 			int floresta[9]={50, 80, 70, 40, 10, 30, 60, 20, 90};
 			
@@ -264,15 +287,22 @@ int menu() {
     }       
 		
 			default:
-				cout << "Digite uma opcao VALIDA!";
+				cout << "Digite uma opÁ„o V¡LIDA!";
 				return 1;
 	}	
 }
 
 main() {
 
-	// Seta a linguagem padr√£o para portugu√™s, para aceitar acentos e √ß
+	// Seta a linguagem padr„o para portuguÍs, para aceitar acentos e Á
 	setlocale(LC_ALL, "Portuguese");
 	create();
 	while(menu());
+	cout << endl << "Feito por:" << endl;
+	cout << "Fellipe JosÈ Rosa Garcias - 2017200985" << endl;
+	cout << "Hugo - MatrÌcula" << endl;
+	cout << "Jeferson - MatrÌcula" << endl;
+	cout << "Leandro - MatrÌcula" << endl;
+	system("pause");
+
 }
