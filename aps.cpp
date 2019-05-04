@@ -1,3 +1,11 @@
+/* ESTRUTURA DE DADOS - 862;
+	* Fellipe José Rosa Garcias - 2017200985
+	* Hugo - Matrícula
+	* Jefferson Silva Brito - 2017100077
+	* Leandro Sena de Catro - 2018100826
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
@@ -5,6 +13,7 @@
 
 using namespace std;
 
+// Contador para manipular a exibição de elementos de uma árvore específica
 int contador = 1;
 
 // Cria o struct da arvore que será inserida em uma floresta
@@ -83,7 +92,6 @@ void inserirNaArvore(int chave, struct EnoArvore **raiz) {
 	// Caso base
 	if (*raiz == NULL) {
 		*raiz = alocarArvore(chave);
-		cout << (*raiz)->chave << endl;
 		return;
 	}
 	
@@ -96,8 +104,7 @@ void inserirNaArvore(int chave, struct EnoArvore **raiz) {
 void inserirArvore(int chave, struct EnoFloresta **floresta) {
 
 	 // Verifica se a chave estão entre os valores permitidos da floresta
-	if ((chave >= (*floresta)->chaveInicial && chave < (*floresta)->chaveFinal) || (chave >= (*floresta)->chaveFinal && (*floresta)->dir == NULL)
-		|| (chave < (*floresta)->chaveInicial && (*floresta)->esq == NULL)) {
+	if (chave >= (*floresta)->chaveInicial && chave < (*floresta)->chaveFinal) {
 		inserirNaArvore(chave, &(*floresta)->arvore);
 		return;
 	}
@@ -118,17 +125,14 @@ void inserirArvore(int chave, struct EnoFloresta **floresta) {
 void imprimirPreOrdemArvore(struct EnoArvore *raiz) {
 	
 	// Caso base
-	if (raiz == NULL) return;
+	if (raiz == NULL) {
+		cout << "[]";
+		return;
+	}
 	
 	// Imprime a chave
-	cout << "[" << raiz->chave;
+	cout << " [" << raiz->chave;
 
-	// Caso o elemento a esquerda não seja nulo, é impresso
-	(raiz->esq != NULL) ? cout << "[" << raiz->esq->chave << "]" : cout << "[]";
-
-	// Caso o elemento a direita não seja nulo, é impresso
-	(raiz->dir != NULL) ? cout << "[" << raiz->dir->chave << "]" : cout << "[]";
-	cout << "]";
 	
 	// Chama o elemento a esquerda
 	imprimirPreOrdemArvore(raiz->esq);
@@ -136,51 +140,31 @@ void imprimirPreOrdemArvore(struct EnoArvore *raiz) {
 	// Chama o elemento a direita
 	imprimirPreOrdemArvore(raiz->dir);
 	
+	cout << "] ";
+	
 	
 }
 
 
 // Imprime a floresta e suas respectivas árvores - (método colchete)
-void imprimirPreOrdem(struct EnoFloresta **floresta) {
+void imprimirPreOrdem(struct EnoFloresta *floresta) {
 
 	// Caso base
-	if((*floresta) == NULL) return;
+	if(floresta == NULL) {
+		cout << "[]";
+		return;
+	}
 
 	// Imprime a chave final da floresta (que é o valor digitado pelo usuário ou do teste)
-	cout << "[" << (*floresta)->chaveFinal;
-	
-	// Se a floresta a esquerda não for nula Ã© impressa
-	if ((*floresta)->esq != NULL) {
-		cout << " [";
-		cout << (*floresta)->esq->chaveFinal;
-		// Imprime a árvore da floresta a esquerda
-		imprimirPreOrdemArvore((*floresta)->esq->arvore);
-		cout << "] ";
-	} else {
-		// Imprime colchete vazio caso a floresta a esquerda seja nula
-		cout << " [] ";
-	}
-	
-	// Se a floresta a direita não for nula é impressa
-	if ((*floresta)->dir != NULL) {
-		cout << "[";
-		cout << (*floresta)->dir->chaveFinal;
-		// Imprime a árvore da floresta a direita
-		imprimirPreOrdemArvore((*floresta)->dir->arvore);
-		cout << "]";
-	} else {
-		// Imprime colchete vazio caso a floresta a direita seja nula
-		cout << "[]";
-	}
-	
-	
-	cout << "]" << endl;
-  	
+	cout << " [" << floresta->chaveFinal;
+
 	// Chama a floresta a esquerda
-  	imprimirPreOrdem(&(*floresta)->esq);  
+  	imprimirPreOrdem(floresta->esq);  
 	
 	// Chama a floresta a direita
-  	imprimirPreOrdem(&(*floresta)->dir);  
+  	imprimirPreOrdem(floresta->dir);  
+  	
+  	cout << "] ";
 }
 
 // Imprime as opções de árvore disponíveis
@@ -189,7 +173,7 @@ void imprimirOpcoesArvore(struct EnoFloresta *floresta, int *contador) {
 	if (floresta == NULL) return;
 	
 	imprimirOpcoesArvore(floresta->esq, contador);
-	cout << "[" << (*contador)++ << "] De " << floresta->chaveInicial << " até " << floresta->chaveFinal - 1 << endl;
+	cout << "[" << (*contador)++ << "] De " << floresta->chaveInicial << " até " << floresta->chaveFinal - 1 << " (Floresta " << floresta->chaveFinal << ")" << endl;
 	imprimirOpcoesArvore(floresta->dir, contador);
 
 }
@@ -211,10 +195,8 @@ int menu() {
 	int opcao;
 	system("cls");
 	cout << endl << "-------- MENU --------" << endl << endl;
-	cout << "[1] Inserir na floresta" << endl;
-	cout << "[2] Inserir na arvore" << endl;
-	cout << "[3] Imprimir dados" << endl;
-	cout << "[4] Massa de teste" << endl;
+	cout << "[1] Inserir elemento" << endl;
+	cout << "[2] Imprimir dados" << endl;
 	cout << "[0] Sair" << endl;
 	cout << "Opção: ";
 	cin >> opcao;
@@ -224,24 +206,20 @@ int menu() {
 		case 1:
 		{ 
 			system("cls");
-			cout << endl << "-------- INSERIR NA FLORESTA --------" << endl << endl;
+			cout << endl << "-------- INSERIR DADO --------" << endl << endl;
 			int elem;
-		  	cout << "Digite o elemento para inserir na Floresta: ";
+		  	cout << "Digite o elemento a ser inserido: ";
 		  	cin >> elem;
+		  	if (elem < 1 || elem > 89) {
+		  		cout << "Elemento inválido, digite um número >= 1 e <= 89" << endl;
+				system("pause");
+				return 1;	
+			}
+		  	inserirArvore(elem, &monitor);
 		  	return 1;
 		}
 		
 		case 2:
-		{ 
-			system("cls");
-			cout << endl << "-------- INSERIR NA ÁRVORE --------" << endl << endl;
-			int elem;
-		  	cout << "Digite o elemento para inserir na arvore da floresta: ";
-		  	cin >> elem;
-		  	return 1;
-		}
-		
-		case 3:
 		{ 
 			system("cls");
 			cout << endl << "-------- IMPRIMIR DADOS --------" << endl << endl;
@@ -251,14 +229,13 @@ int menu() {
 	      	cout << "Opção:";
 	      	cin >> opcao;
 		  	if (opcao == 1) {
-		  		imprimirPreOrdem(&monitor);
+		  		imprimirPreOrdem(monitor);
 			} else if (opcao == 2) {
 				imprimirOpcoesArvore(monitor, &contador);
 				contador = 1;
 				cout << "Opção: ";
 				cin >> opcao2;
 				ImprimirArvoreEspecifica(opcao2, &contador, monitor);
-				//imprimirPreOrdemArvore(monitor);	
 			} else{
 				cout << "Opção inválida!" << endl;
 			}
@@ -267,29 +244,26 @@ int menu() {
 		  	return 1;
 		}
 
-		case 4:
-		{ 
-			system("cls");
-			cout << endl << "-------- MASSA DE TESTE --------" << endl << endl;
-			int arvore[9]={5, 15, 25, 35, 45, 55, 65, 75, 85};
-			int floresta[9]={50, 80, 70, 40, 10, 30, 60, 20, 90};
-			
-			int sizeFloresta = sizeof(floresta) / sizeof(floresta[0]); // Obtem o tamanho do vetor Z
-			for(int i=0; i<sizeFloresta; i++) {
-				inserirFloresta(floresta[i], &monitor);
-			}
-			int sizeArvore = sizeof(arvore) / sizeof(arvore[0]); // Obtem o tamanho do vetor X
-			for(int i=0; i<sizeArvore; i++) {
-				inserirArvore(arvore[i], &monitor);
-			} 
-		  	system("pause");
-		  	return 1;
-    }       
-		
-			default:
-				cout << "Digite uma opção VÁLIDA!";
-				return 1;
+		default:
+			cout << "Digite uma opção VÁLIDA!" << endl;
+			system("pause");
+			return 1;
 	}	
+}
+
+// Insere as árvores e florestas automaticamente no início da execução do programa
+void inserirDados() {
+	int arvore[9]={5, 15, 25, 35, 45, 55, 65, 75, 85};
+	int floresta[9]={50, 80, 70, 40, 10, 30, 60, 20, 90};
+			
+	int sizeFloresta = sizeof(floresta) / sizeof(floresta[0]); // Obtem o tamanho do vetor Z
+	for(int i=0; i<sizeFloresta; i++) {
+		inserirFloresta(floresta[i], &monitor);
+	}
+	int sizeArvore = sizeof(arvore) / sizeof(arvore[0]); // Obtem o tamanho do vetor X
+	for(int i=0; i<sizeArvore; i++) {
+		inserirArvore(arvore[i], &monitor);
+	} 
 }
 
 main() {
@@ -297,12 +271,14 @@ main() {
 	// Seta a linguagem padrão para português, para aceitar acentos e ç
 	setlocale(LC_ALL, "Portuguese");
 	create();
+	inserirDados();
 	while(menu());
-	cout << endl << "Feito por:" << endl;
+	cout << endl << "ESTRUTURA DE DADOS - 862" << endl;
+	cout << "--------------------------------------------------------" << endl;
 	cout << "Fellipe José Rosa Garcias - 2017200985" << endl;
-	cout << "Hugo - Matrícula" << endl;
-	cout << "Jeferson - Matrícula" << endl;
-	cout << "Leandro - Matrícula" << endl;
+	cout << "Hugo Olaitan Ferreira Jeronimo - Matrícula" << endl;
+	cout << "Jefferson Silva Brito - 2017100077" << endl;
+	cout << "Leandro Sena de Catro - 2018100826" << endl;
 	system("pause");
 
 }
