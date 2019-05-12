@@ -1,6 +1,6 @@
 /* ESTRUTURA DE DADOS - 862;
 	* Fellipe José Rosa Garcias - 2017200985
-	* Hugo - Matrícula
+	* Hugo Olaitan Ferreira Jerônimo - 2018101788
 	* Jefferson Silva Brito - 2017100077
 	* Leandro Sena de Catro - 2018100826
 */
@@ -145,6 +145,30 @@ void imprimirPreOrdemArvore(struct EnoArvore *raiz) {
 	
 }
 
+// Imprime a árvore de todas passada por parâmetro - (método colchete)
+void imprimirPreOrdemArvoreTotal(struct EnoArvore *raiz) {
+	
+	// Caso base
+	if (raiz == NULL) {
+		cout << "()";
+		return;
+	}
+	
+	// Imprime a chave
+	cout << " (" << raiz->chave;
+
+	
+	// Chama o elemento a esquerda
+	imprimirPreOrdemArvoreTotal(raiz->esq);
+
+	// Chama o elemento a direita
+	imprimirPreOrdemArvoreTotal(raiz->dir);
+	
+	cout << ") ";
+	
+	
+}
+
 
 // Imprime a floresta e suas respectivas árvores - (método colchete)
 void imprimirPreOrdem(struct EnoFloresta *floresta) {
@@ -157,6 +181,10 @@ void imprimirPreOrdem(struct EnoFloresta *floresta) {
 
 	// Imprime a chave final da floresta (que é o valor digitado pelo usuário ou do teste)
 	cout << " [" << floresta->chaveFinal;
+	
+	cout << " {";
+	imprimirPreOrdemArvoreTotal(floresta->arvore);
+	cout << "} ";
 
 	// Chama a floresta a esquerda
   	imprimirPreOrdem(floresta->esq);  
@@ -224,9 +252,9 @@ int menu() {
 			system("cls");
 			cout << endl << "-------- IMPRIMIR DADOS --------" << endl << endl;
 			int opcao, opcao2;
-			cout << "[1] Para Imprimir pré ordem dos dados da Floresta" << endl;		  
+			cout << "[1] Para Imprimir pré ordem de todos os dados da Floresta" << endl;		  
 	      	cout << "[2] Imprimir pré ordem dos dados específicos de uma floresta" << endl;
-	      	cout << "Opção:";
+	      	cout << "Opção: ";
 	      	cin >> opcao;
 		  	if (opcao == 1) {
 		  		imprimirPreOrdem(monitor);
@@ -236,6 +264,7 @@ int menu() {
 				cout << "Opção: ";
 				cin >> opcao2;
 				ImprimirArvoreEspecifica(opcao2, &contador, monitor);
+				contador = 1;
 			} else{
 				cout << "Opção inválida!" << endl;
 			}
@@ -256,11 +285,11 @@ void inserirDados() {
 	int arvore[9]={5, 15, 25, 35, 45, 55, 65, 75, 85};
 	int floresta[9]={50, 80, 70, 40, 10, 30, 60, 20, 90};
 			
-	int sizeFloresta = sizeof(floresta) / sizeof(floresta[0]); // Obtem o tamanho do vetor Z
+	int sizeFloresta = sizeof(floresta) / sizeof(floresta[0]); // Obtem o tamanho do vetor floresta
 	for(int i=0; i<sizeFloresta; i++) {
 		inserirFloresta(floresta[i], &monitor);
 	}
-	int sizeArvore = sizeof(arvore) / sizeof(arvore[0]); // Obtem o tamanho do vetor X
+	int sizeArvore = sizeof(arvore) / sizeof(arvore[0]); // Obtem o tamanho do vetor arvore
 	for(int i=0; i<sizeArvore; i++) {
 		inserirArvore(arvore[i], &monitor);
 	} 
@@ -273,12 +302,13 @@ main() {
 	create();
 	inserirDados();
 	while(menu());
+	system("cls");
 	cout << endl << "ESTRUTURA DE DADOS - 862" << endl;
 	cout << "--------------------------------------------------------" << endl;
 	cout << "Fellipe José Rosa Garcias - 2017200985" << endl;
-	cout << "Hugo Olaitan Ferreira Jeronimo - Matrícula" << endl;
+	cout << "Hugo Olaitan Ferreira Jerônimo - 2018101788" << endl;
 	cout << "Jefferson Silva Brito - 2017100077" << endl;
-	cout << "Leandro Sena de Catro - 2018100826" << endl;
+	cout << "Leandro Sena de Catro - 2018100826" << endl << endl;
 	system("pause");
 
 }
